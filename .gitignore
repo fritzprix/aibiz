@@ -1,0 +1,17 @@
+# 비밀 정보 — 절대 공유/커밋 금지 (텔레그램 계정 전체 접근 권한, API 키)
+secrets/
+
+# 개인 데이터 — 사람마다 각자 만듦 (민감 정보)
+data/
+wiki/
+minutes/
+briefings/
+logs/
+
+# 컴퓨터마다 다른 설정 (처음 실행 때 자동 생성)
+config/
+
+.venv/
+__pycache__/
+*.pyc
+.DS_Store

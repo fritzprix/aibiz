@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "telegram@claude-plugins-official": true
+  },
+  "permissions": {
+    "deny": [
+      "Read(./secrets/**)",
+      "Edit(./secrets/**)",
+      "Write(./secrets/**)",
+      "Bash(cat secrets/*)",
+      "Bash(type secrets\\*)"
+    ]
+  }
+}
