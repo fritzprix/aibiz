@@ -15,7 +15,8 @@ Answer in Korean.
    - Too many hits → narrow with `--chat <part of chat name>`. Need older → `--days 30`. News/research channels are excluded by default; add `--channels` for market/industry questions.
    - Need context → in the hit's `data/text/.../<date>.md`, read only around `[#id]` (Grep with `-C`).
 3. **Minutes**: if a meeting is relevant, Grep `minutes/`.
-4. If the wiki is empty or stale (`PY scripts/digest.py status` shows kb last update > 1 day ago), widen step 2 and answer, then offer "위키를 최신으로 정리해 둘까요?".
+4. **Web (public facts only)**: for market/industry/announcement questions, or when internal sources lack a public fact, use WebSearch/WebFetch. Search with public names/topics only — never internal prices, terms, people or project names. Cite `(웹: outlet, date)` with the URL and keep it separate from internal evidence.
+5. If the wiki is empty or stale (`PY scripts/digest.py status` shows kb last update > 1 day ago), widen step 2 and answer, then offer "위키를 최신으로 정리해 둘까요?".
 
 ## Answer format
 - **Conclusion first** (1–2 lines) → 2–5 supporting bullets, each with a source → "확인이 필요한 점" if any.

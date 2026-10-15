@@ -194,7 +194,7 @@ $tools = @(
   "Bash($PY scripts/briefing.py:*)", "Bash($PY scripts/md2docx.py:*)", "Bash($PY scripts/directive.py:*)",
   "mcp__plugin_telegram_telegram__reply", "mcp__plugin_telegram_telegram__react",
   "mcp__plugin_telegram_telegram__edit_message", "mcp__plugin_telegram_telegram__download_attachment",
-  "Agent", "Skill"
+  "Agent", "Skill", "WebSearch", "WebFetch"
 )
 claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools @tools
 ```
@@ -208,7 +208,7 @@ TOOLS=(
   "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" "Bash($PY scripts/directive.py:*)"
   "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react"
   "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment"
-  "Agent" "Skill"
+  "Agent" "Skill" "WebSearch" "WebFetch"
 )
 claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools "${TOOLS[@]}"
 ```
@@ -223,7 +223,7 @@ Add-Content $PROFILE @'
 function aibiz {
   Set-Location $HOME\aibiz
   $PY = ".venv/Scripts/python.exe"
-  $tools = @("Bash($PY scripts/tg_sync.py:*)","Bash($PY scripts/transcribe.py:*)","Bash($PY scripts/digest.py:*)","Bash($PY scripts/briefing.py:*)","Bash($PY scripts/md2docx.py:*)", "Bash($PY scripts/directive.py:*)","mcp__plugin_telegram_telegram__reply","mcp__plugin_telegram_telegram__react","mcp__plugin_telegram_telegram__edit_message","mcp__plugin_telegram_telegram__download_attachment","Agent","Skill")
+  $tools = @("Bash($PY scripts/tg_sync.py:*)","Bash($PY scripts/transcribe.py:*)","Bash($PY scripts/digest.py:*)","Bash($PY scripts/briefing.py:*)","Bash($PY scripts/md2docx.py:*)", "Bash($PY scripts/directive.py:*)","mcp__plugin_telegram_telegram__reply","mcp__plugin_telegram_telegram__react","mcp__plugin_telegram_telegram__edit_message","mcp__plugin_telegram_telegram__download_attachment","Agent","Skill","WebSearch","WebFetch")
   claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools @tools
 }
 '@
@@ -241,7 +241,7 @@ aibiz() {
     "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" "Bash($PY scripts/directive.py:*)" \
     "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react" \
     "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment" \
-    "Agent" "Skill"
+    "Agent" "Skill" "WebSearch" "WebFetch"
 }
 EOF
 source ~/.zshrc

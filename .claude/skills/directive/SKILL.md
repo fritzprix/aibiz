@@ -72,6 +72,7 @@ source: (비서 대화방 #123)
 ### 💬 Executive message → answer, new instruction, or question
 - **Answer to a pending question**: it replies to a bot message containing `[D#]`, or (without a reply) exactly one directive is `확인대기` and the text looks like a choice ("1,3", "1번 해줘", "다 해줘"). If ambiguous, ask "어느 지시(D2/D3)에 대한 답인가요?".
   → Execute the chosen follow-ups:
+  - **Public facts the internal sources lack** (deals, announcements, market numbers): use WebSearch/WebFetch. Query with public company names and topics only — never internal prices, terms, people or project names. Cite as `(웹: outlet, date)` and list URLs under `## 웹 출처`; mark single-source or unconfirmed reports as such. Keep internal and web evidence visibly separate.
   - Reports/documents: write `drafts/<D#>_<name>.md` (Korean, executive tone, sources cited), convert with `PY scripts/md2docx.py`, send with `--attach` the .docx and a 2–3 line summary.
   - Message drafts: send the draft text itself so the executive can copy-paste it (start with "✉️ 초안 — 복사해서 보내세요:").
   - Reminders: set the directive's `due` and note it; the morning briefing surfaces it.

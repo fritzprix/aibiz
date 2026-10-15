@@ -17,4 +17,4 @@ exec claude --channels plugin:telegram@claude-plugins-official --permission-mode
   "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" "Bash($PY scripts/directive.py:*)" \
   "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react" \
   "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment" \
-  "Agent" "Skill"
+  "Agent" "Skill" "WebSearch" "WebFetch"
