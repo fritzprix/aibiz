@@ -24,8 +24,10 @@ DAILY = ROOT / "data" / "daily"
 CHATS_MD = ROOT / "data" / "chats.md"
 CACHE_FILE = ROOT / "data" / "state" / "text_index.json"
 
-KIND_DIR = {"private": "private", "group": "group", "channel": "channel", "bot": "other", "saved": "other"}
-KIND_KO = {"private": "1:1 대화", "group": "그룹", "channel": "채널", "bot": "봇", "saved": "저장한 메시지"}
+KIND_DIR = {"private": "private", "group": "group", "channel": "channel", "bot": "other", "saved": "other",
+            "assistant": "other"}
+KIND_KO = {"private": "1:1 대화", "group": "그룹", "channel": "채널", "bot": "봇", "saved": "저장한 메시지",
+           "assistant": "비서 대화방"}
 MEDIA_KO = {"photo": "사진", "video": "동영상", "voice": "음성메시지", "audio": "오디오", "link": "링크 미리보기", "file": "파일"}
 WEEK = "월화수목금토일"
 SESSION_GAP_MIN = 60  # 이 시간 이상 대화가 끊기면 새 단락
@@ -123,7 +125,10 @@ def fmt_line(r, kind):
         head += f" {r.get('sender') or '?'}" + (" (나)" if r.get("out") else "")
     if r.get("reply_to"):
         head += f" ↪#{r['reply_to']}"
-    extras = [x for x in ("전달됨" if r.get("forwarded") else None, media_ko(r.get("media"))) if x]
+    fwd = None
+    if r.get("forwarded"):
+        fwd = f"전달: {r['fwd_from']}" if r.get("fwd_from") else "전달됨"
+    extras = [x for x in (fwd, media_ko(r.get("media"))) if x]
     body = one_line(r.get("text"))
     tail = f" ({', '.join(extras)})" if extras else ""
     return f"{head}: {body}{tail}".rstrip()

@@ -6,6 +6,7 @@ data/
 wiki/
 minutes/
 briefings/
+drafts/
 logs/
 
 # 컴퓨터마다 다른 설정 (처음 실행 때 자동 생성)

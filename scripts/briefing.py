@@ -140,7 +140,7 @@ def find_claude(c):
 def allowed_tools():
     py = ".venv/Scripts/python.exe" if T.IS_WIN else ".venv/bin/python"
     tools = ["Read", "Grep", "Glob", "Write", "Edit", "Agent", "Skill"]
-    for s in ("digest.py", "md2docx.py"):
+    for s in ("digest.py", "md2docx.py", "directive.py"):
         tools += [f"Bash({py} scripts/{s}:*)", f"Bash(./{py} scripts/{s}:*)"]
     return ",".join(tools)
 

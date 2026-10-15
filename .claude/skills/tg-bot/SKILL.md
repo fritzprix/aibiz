@@ -85,8 +85,9 @@ No → `telegram:access` skill `policy allowlist`. Yes → have them message the
 | "다른 컴퓨터에서도 같은 봇 쓰고 싶어" | Works on one PC at a time. Recommend one bot per PC |
 | "컴퓨터 끄면?" | Questions sent while off arrive when reopened with start_assistant (within about a day) |
 
-## When a question arrives via the bot
-- Always answer with the Telegram reply tool (text written in this window is not visible on the phone).
-- Knowledge questions → answer the `kb-ask` way.
+## When a message arrives via the bot
+- **Every** incoming bot message goes through the `directive` skill (`directive.py scan --live` → process the inbox). It handles forwarded senior-leader messages (directives), replies to pending questions, and ordinary questions in one place, so nothing is handled twice even if the headless run already processed it.
+- Text written in this window is not visible on the phone — send via `directive.py send` (or the Telegram reply tool for a quick acknowledgement).
 - Keep it phone-sized: answer → 1–3 supporting points → "더 자세히 원하면 말씀하세요".
 - Audio attachments → `meeting-minutes` skill.
+- When the assistant window is closed, the 30-min sync notices new bot messages and runs the same `directive` flow headlessly, so the executive still gets answers (within ~30 min).

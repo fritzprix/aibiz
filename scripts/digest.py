@@ -111,7 +111,7 @@ def cmd_prep(a):
     blocks, new_cursor, total_msgs = [], {}, 0
     for cid, e in sorted(cache.items(), key=lambda x: (KIND_ORDER.get(x[1]["type"], 3), -(x[1].get("total") or 0))):
         kind = e["type"]
-        if kind in ("bot", "saved") or (skip_private and kind == "private"):
+        if kind in ("bot", "saved", "assistant") or (skip_private and kind == "private"):
             continue
         if any(str(x.get("id")) == cid for x in cfg.get("exclude", [])):
             continue

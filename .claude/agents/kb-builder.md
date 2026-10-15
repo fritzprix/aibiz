@@ -21,7 +21,9 @@ wiki/
   사람/<name>.md
   조직/<company or team>.md
   주제/<topic>.md      technology, market, policy topics spanning several workstreams
+  지시/<date>_<summary>.md  senior-leader directives — owned by the `directive` skill
 ```
+`지시/` pages: never create or change their `status`/`due`. If the batch shows progress on a directive's subject, you may append one line to its `## 진행 기록` with a source, and link it from the related workstream.
 File names = the name people actually use (e.g. `업무/Google Colocation MOU.md`, `사람/팽세라.md`). To avoid duplicates, **always Glob/Grep existing pages and their `aliases` before creating a new one**; merge into an existing page by adding an alias when it's the same thing.
 
 ### Workstream page template (keep the Korean headings)

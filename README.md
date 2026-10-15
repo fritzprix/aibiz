@@ -189,7 +189,7 @@ cd $HOME\aibiz
 $PY = ".venv/Scripts/python.exe"
 $tools = @(
   "Bash($PY scripts/tg_sync.py:*)", "Bash($PY scripts/transcribe.py:*)", "Bash($PY scripts/digest.py:*)",
-  "Bash($PY scripts/briefing.py:*)", "Bash($PY scripts/md2docx.py:*)",
+  "Bash($PY scripts/briefing.py:*)", "Bash($PY scripts/md2docx.py:*)", "Bash($PY scripts/directive.py:*)",
   "mcp__plugin_telegram_telegram__reply", "mcp__plugin_telegram_telegram__react",
   "mcp__plugin_telegram_telegram__edit_message", "mcp__plugin_telegram_telegram__download_attachment",
   "Agent", "Skill"
@@ -203,7 +203,7 @@ cd ~/aibiz
 PY=.venv/bin/python
 TOOLS=(
   "Bash($PY scripts/tg_sync.py:*)" "Bash($PY scripts/transcribe.py:*)" "Bash($PY scripts/digest.py:*)"
-  "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)"
+  "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" "Bash($PY scripts/directive.py:*)"
   "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react"
   "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment"
   "Agent" "Skill"
@@ -221,7 +221,7 @@ Add-Content $PROFILE @'
 function aibiz {
   Set-Location $HOME\aibiz
   $PY = ".venv/Scripts/python.exe"
-  $tools = @("Bash($PY scripts/tg_sync.py:*)","Bash($PY scripts/transcribe.py:*)","Bash($PY scripts/digest.py:*)","Bash($PY scripts/briefing.py:*)","Bash($PY scripts/md2docx.py:*)","mcp__plugin_telegram_telegram__reply","mcp__plugin_telegram_telegram__react","mcp__plugin_telegram_telegram__edit_message","mcp__plugin_telegram_telegram__download_attachment","Agent","Skill")
+  $tools = @("Bash($PY scripts/tg_sync.py:*)","Bash($PY scripts/transcribe.py:*)","Bash($PY scripts/digest.py:*)","Bash($PY scripts/briefing.py:*)","Bash($PY scripts/md2docx.py:*)", "Bash($PY scripts/directive.py:*)","mcp__plugin_telegram_telegram__reply","mcp__plugin_telegram_telegram__react","mcp__plugin_telegram_telegram__edit_message","mcp__plugin_telegram_telegram__download_attachment","Agent","Skill")
   claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools @tools
 }
 '@
@@ -236,7 +236,7 @@ aibiz() {
   local PY=.venv/bin/python
   claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools \
     "Bash($PY scripts/tg_sync.py:*)" "Bash($PY scripts/transcribe.py:*)" "Bash($PY scripts/digest.py:*)" \
-    "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" \
+    "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" "Bash($PY scripts/directive.py:*)" \
     "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react" \
     "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment" \
     "Agent" "Skill"

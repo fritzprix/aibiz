@@ -550,7 +550,8 @@ def chat_kind(d):
     return "group"
 
 
-KIND_KO = {"private": "1:1 대화", "group": "그룹", "channel": "채널", "bot": "봇", "saved": "저장한 메시지"}
+KIND_KO = {"private": "1:1 대화", "group": "그룹", "channel": "채널", "bot": "봇", "saved": "저장한 메시지",
+           "assistant": "비서 대화방"}
 
 
 def skip_reason(d, kind, cfg):
@@ -583,9 +584,29 @@ def media_kind(m):
     return None
 
 
+def forward_origin(m):
+    """전달된 메시지의 원래 보낸 사람·시각 (상위 임원 지시 파악용)."""
+    f = m.fwd_from
+    if not f:
+        return None, None
+    name = getattr(f, "from_name", None) or getattr(f, "post_author", None)
+    if not name:
+        try:
+            ent = m.forward.sender or m.forward.chat if m.forward else None
+            name = display_name(ent) if ent else None
+        except Exception:
+            name = None
+    if not name and getattr(f, "from_id", None) is not None:
+        pid = f.from_id
+        name = str(getattr(pid, "user_id", None) or getattr(pid, "channel_id", None) or getattr(pid, "chat_id", ""))
+    when = f.date.astimezone().isoformat(timespec="seconds") if getattr(f, "date", None) else None
+    return name, when
+
+
 def to_row(m, cid, title, kind):
     sender = display_name(m.sender) if m.sender else (m.post_author or title)
     top = getattr(m.reply_to, "reply_to_top_id", None) if m.reply_to else None
+    fwd_name, fwd_date = forward_origin(m)
     return {
         "id": m.id,
         "date": m.date.astimezone().isoformat(timespec="seconds"),
@@ -599,21 +620,44 @@ def to_row(m, cid, title, kind):
         "reply_to": m.reply_to_msg_id,
         "thread_top": top,
         "forwarded": bool(m.fwd_from),
+        "fwd_from": fwd_name,
+        "fwd_date": fwd_date,
         "media": media_kind(m),
     }
+
+
+ASSISTANT_CACHE = STATE_DIR / "assistant_bot.json"
+
+
+def assistant_bot_username():
+    """내 비서 봇의 아이디 (봇 대화방은 '비서 대화방'으로 따로 수집 — 상위 지시·답장 감지용)."""
+    token, _ = bot_status()
+    if not token:
+        return None
+    cache = load_json(ASSISTANT_CACHE, {})
+    key = token.split(":")[0]
+    if cache.get("key") == key and cache.get("username"):
+        return cache["username"]
+    ok, info = check_bot_token(token)
+    if not ok:
+        return cache.get("username")
+    save_json(ASSISTANT_CACHE, {"key": key, "username": info.lstrip("@")})
+    return info.lstrip("@")
 
 
 class NeedLogin(Exception):
     pass
 
 
-async def do_sync(cfg, creds):
+async def do_sync(cfg, creds, only_bot=False, bot_username=None):
     from telethon import errors
 
     client = make_client(creds)
     await client.connect()
-    summary = {"chats_checked": 0, "chats_with_new": 0, "new_messages": 0, "skipped": 0, "problems": []}
+    summary = {"chats_checked": 0, "chats_with_new": 0, "new_messages": 0, "skipped": 0, "problems": [],
+               "assistant_new": 0}
     touched = set()
+    bot_un = (bot_username or "").lower()
     try:
         if not await client.is_user_authorized():
             raise NeedLogin()
@@ -625,6 +669,10 @@ async def do_sync(cfg, creds):
         cap = int(cfg["max_messages_per_chat_per_run"])
         async for d in client.iter_dialogs():
             kind = chat_kind(d)
+            if kind == "bot" and bot_un and (getattr(d.entity, "username", "") or "").lower() == bot_un:
+                kind = "assistant"  # 내 비서 봇과의 대화방
+            if only_bot and kind != "assistant":
+                continue
             cid = str(d.id)
             if skip_reason(d, kind, cfg):
                 summary["skipped"] += 1
@@ -633,6 +681,13 @@ async def do_sync(cfg, creds):
             st = chats.get(cid, {})
             last = st.get("last_id")
             top = d.message.id if d.message else 0  # 채팅방 목록에 이미 들어 있는 '마지막 메시지 번호'
+            if kind == "assistant" and not last:
+                last = top  # 비서 대화방은 지난 대화를 가져오지 않음 — 지금부터 새로 오는 것만
+                chats[cid] = {"title": d.name, "type": kind, "username": getattr(d.entity, "username", None),
+                              "last_id": last, "last_checked": now_local().isoformat(timespec="seconds"),
+                              "raw": f"data/raw/{cid}/"}
+                save_json(STATE_FILE, state)
+                continue
             if last and top <= last:
                 continue  # 새 메시지 없음 → 텔레그램에 따로 묻지 않음
             try:
@@ -662,6 +717,8 @@ async def do_sync(cfg, creds):
                 touched |= tg_render.append_rows(cid, rows)
                 summary["chats_with_new"] += 1
                 summary["new_messages"] += len(rows)
+                if kind == "assistant":
+                    summary["assistant_new"] += sum(1 for r in rows if r["out"])
             chats[cid] = {
                 "title": d.name,
                 "type": kind,
@@ -702,7 +759,8 @@ def cmd_sync(args):
         with Lock("sync"):
             if tg_render.migrate_flat():
                 log.info("migrated flat raw files to monthly folders")
-            summary, touched, chats = asyncio.run(do_sync(cfg, creds))
+            summary, touched, chats = asyncio.run(do_sync(cfg, creds, only_bot=args.only_bot,
+                                                          bot_username=assistant_bot_username()))
             if touched:
                 try:
                     tg_render.render(touched, chats)
@@ -742,8 +800,15 @@ def cmd_sync(args):
         write_status(False, "E-UNKNOWN", f"예상하지 못한 문제: {type(e).__name__}: {e}", started=started)
         print(f"예상하지 못한 문제가 생겼어요: {type(e).__name__}: {e}")
         return 5
-    write_status(True, summary=summary, started=started)
+    if not args.only_bot:
+        write_status(True, summary=summary, started=started)
     log.info("sync ok: %s", summary)
+    if summary.get("assistant_new") and not args.only_bot and not args.no_directive:
+        try:  # 임원이 봇에게 새로 보낸 것(전달된 지시·답장·질문)이 있으면 처리 시작 (비서 창이 꺼져 있을 때만)
+            import directive
+            print("  " + directive.maybe_spawn())
+        except Exception:
+            log.exception("directive spawn failed")
     print(f"✅ 수집 완료: 채팅방 {summary['chats_checked']}개 확인, "
           f"{summary['chats_with_new']}개 방에서 새 메시지 {summary['new_messages']}건")
     for p in summary["problems"]:
@@ -1156,7 +1221,9 @@ def main():
     d.add_argument("--offline", action="store_true", help="텔레그램에 실제로 접속하지 않고 점검")
     d.add_argument("--bot", action="store_true", help="휴대폰 질문용 봇 연결 상태도 점검")
     sub.add_parser("bot-setup")
-    sub.add_parser("sync")
+    sy = sub.add_parser("sync")
+    sy.add_argument("--only-bot", action="store_true", help="비서 봇 대화방만 (지시·답장 확인용, 몇 초)")
+    sy.add_argument("--no-directive", action="store_true", help="수집 후 지시 처리를 시작하지 않음")
     sub.add_parser("chats")
     e = sub.add_parser("exclude")
     e.add_argument("action", choices=["add", "remove", "list"])
