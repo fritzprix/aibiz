@@ -75,7 +75,7 @@ Common problems at this step (answer in Korean when the user reports one):
 | Code doesn't arrive | It comes in the **Telegram app** chat named 'Telegram' (blue check), not SMS. Check +82 prefix and dropped leading 0 |
 | "Invalid confirmation code" | Use the most recent code, no spaces. Otherwise start over |
 | "Too many tries" | Telegram temporarily blocked; retry in a few hours (up to a day) |
-| "ERROR" popup on Create application | Most common. ① turn off VPN/ad-blocker ② another browser (Chrome incognito) ③ more unique Short name (e.g. `aidev` + birthday digits) ④ fill Description ⑤ retry hours later or from a phone browser |
+| "ERROR" popup on Create application | Most common. ① turn off VPN/ad-blocker ② another browser (Chrome incognito) ③ more unique Short name (e.g. `aibiz` + birthday digits) ④ fill Description ⑤ retry hours later or from a phone browser |
 | Values shown without the create form | An app was created before — just use those values |
 
 ### 3. Open the setup window (login) — `[E-NO-CREDS]`, `[E-NO-LOGIN]`, `[E-LOGGED-OUT]`, `[E-BAD-API]`

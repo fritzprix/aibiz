@@ -978,7 +978,7 @@ def cmd_schedule(args):
         print(f"✅ 자동 수집을 켰어요. 이제 {n}분마다 새 메시지를 가져와요. (컴퓨터가 켜져 있고 로그인된 동안)")
         if any(part in ("Documents", "Desktop", "Downloads") for part in ROOT.parts):
             print("  ⚠ 이 폴더가 '문서/데스크탑/다운로드' 안에 있어서 Mac 보안 설정 때문에 자동 수집이 막힐 수 있어요.")
-            print("    홈 폴더 바로 아래(예: ~/aidev)로 옮기는 걸 권해요.")
+            print("    홈 폴더 바로 아래(예: ~/aibiz)로 옮기는 걸 권해요.")
         return 0
     script = f"""
 $a = New-ScheduledTaskAction -Execute '{VENV_BG_PY}' -Argument '"{Path(__file__).resolve()}" sync' -WorkingDirectory '{ROOT}'

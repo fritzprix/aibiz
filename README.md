@@ -22,7 +22,7 @@
    ```
 2. PowerShell 창을 닫았다가 다시 열고, 이 폴더를 받아요 (설치해 주는 분이 알려준 방법으로).
    ```
-   gh repo clone <저장소 주소> $HOME\aidev
+   gh repo clone fritzprix/aibiz $HOMEibiz
    ```
 
 ### Mac
@@ -30,7 +30,7 @@
    ```
    curl -fsSL https://claude.ai/install.sh | bash
    ```
-2. 이 폴더를 **홈 폴더 바로 아래**에 받아요 (예: `~/aidev`).
+2. 이 폴더를 **홈 폴더 바로 아래**에 받아요 (예: `~/aibiz`).
    ⚠ '문서', '데스크탑', '다운로드' 안에 두면 Mac 보안 때문에 자동 수집·브리핑이 안 돼요.
 
 > 파이썬 등 나머지 필요한 프로그램은 처음 설정할 때 **설정 창이 알아서 설치**해요.

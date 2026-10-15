@@ -26,7 +26,7 @@ Start by showing the big picture briefly:
 `PY scripts/tg_sync.py doctor --bot --offline`. If `.venv` doesn't exist yet, skip the check and go to step 1 — the setup window prepares everything on first run.
 For steps already done, say "○○은 이미 되어 있어요" and move on.
 
-Mac: if the project is inside `Documents`, `Desktop` or `Downloads`, first recommend moving it directly under home (e.g. `~/aidev`) — macOS blocks background jobs there.
+Mac: if the project is inside `Documents`, `Desktop` or `Downloads`, first recommend moving it directly under home (e.g. `~/aibiz`) — macOS blocks background jobs there.
 
 ### 1. Telegram account link → follow `tg-sync` "First-time setup flow"
 Start the first fetch in the background and move straight to step 2 (no need to wait).
