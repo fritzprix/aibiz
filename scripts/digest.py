@@ -225,7 +225,10 @@ def cmd_search(a):
     else:
         since = (load_json(cursor_file("kb"), {}).get("updated") or "2000-01-01")[:10]
     hits = 0
+    excluded = {str(x.get("id")) for x in load_json(ROOT / "config" / "telegram.json", {}).get("exclude", [])}
     for cid, e in R.load_cache().items():
+        if cid in excluded or e["type"] == "assistant":
+            continue  # 제외한 방(개인 대화 등)과 비서 대화방은 검색하지 않음
         if a.chat and a.chat.lower() not in (e["title"] or "").lower():
             continue
         if e["type"] == "channel" and not (a.channels or a.chat):
