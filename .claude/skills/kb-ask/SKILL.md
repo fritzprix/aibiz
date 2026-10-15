@@ -12,7 +12,7 @@ Answer in Korean.
 1. **Wiki**: read `wiki/index.md`; Grep `wiki/` for the question's key terms (file names and `aliases` included).
    Read the relevant pages; follow `## 관련` `[[links]]` one hop only if needed.
 2. **Messages newer than the wiki**: `PY scripts/digest.py search "<term|alias>"` — searches only messages after the last wiki update.
-   - Too many hits → narrow with `--chat <part of chat name>`. Need older → `--days 30`.
+   - Too many hits → narrow with `--chat <part of chat name>`. Need older → `--days 30`. News/research channels are excluded by default; add `--channels` for market/industry questions.
    - Need context → in the hit's `data/text/.../<date>.md`, read only around `[#id]` (Grep with `-C`).
 3. **Minutes**: if a meeting is relevant, Grep `minutes/`.
 4. If the wiki is empty or stale (`PY scripts/digest.py status` shows kb last update > 1 day ago), widen step 2 and answer, then offer "위키를 최신으로 정리해 둘까요?".

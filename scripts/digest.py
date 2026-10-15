@@ -228,6 +228,8 @@ def cmd_search(a):
     for cid, e in R.load_cache().items():
         if a.chat and a.chat.lower() not in (e["title"] or "").lower():
             continue
+        if e["type"] == "channel" and not (a.channels or a.chat):
+            continue  # 뉴스·리서치 채널은 기본 제외 (업무 대화가 묻히지 않게)
         for day in sorted(d for d in e["days"] if d >= since):
             f = ROOT / e["dir"] / f"{day}.md"
             try:
@@ -260,6 +262,7 @@ def main():
     se.add_argument("--days", type=int, help="최근 며칠 (기본: 마지막 위키 반영 이후)")
     se.add_argument("--chat")
     se.add_argument("--limit", type=int, default=80)
+    se.add_argument("--channels", action="store_true", help="뉴스·리서치 채널도 포함")
     a = p.parse_args()
     return {"prep": cmd_prep, "commit": cmd_commit, "release": cmd_release,
             "status": cmd_status, "search": cmd_search}[a.cmd](a)

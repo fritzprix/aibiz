@@ -24,6 +24,7 @@ Always via `PY scripts/directive.py send <txt file> [--attach <file>]` (works li
 ### 📨 Forwarded message → new directive
 1. Skip if an open directive already has the same text (duplicate forward).
 2. Understand it: what is asked, by whom (`원래 보낸 사람`; if unknown write `확인 필요`), deadline (resolve relative dates from the original time), which workstream. Check `wiki/index.md` and related `wiki/업무/` pages; run `PY scripts/digest.py search "<key terms>"` for the latest context.
+   **Check whether it's already been handled**: find the original message in the source chat (Grep its first words in `data/text/` for that day) and read what happened after it in that chat (e.g. a teammate posted a revision, the leader replied "이대로 보내세요"). If already done, say so up front and propose follow-ups for what's still ahead instead of redoing the work.
 3. Create `wiki/지시/<YYYY-MM-DD>_<short summary>.md` with the next id (`D1`, `D2`… — Glob existing files for the max):
 ```markdown
 ---
