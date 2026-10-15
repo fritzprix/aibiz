@@ -22,7 +22,7 @@
    ```
 2. PowerShell 창을 닫았다가 다시 열고, 이 폴더를 받아요 (설치해 주는 분이 알려준 방법으로).
    ```
-   gh repo clone fritzprix/aibiz $HOMEibiz
+   gh repo clone fritzprix/aibiz $HOME\aibiz
    ```
 
 ### Mac

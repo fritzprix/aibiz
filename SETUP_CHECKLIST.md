@@ -13,7 +13,7 @@
 ## 당일 순서
 1. **설치** (README '1. 설치') — Git, Claude Code
    - Mac: 폴더는 반드시 `~/aibiz` 처럼 홈 바로 아래 (문서/데스크탑/다운로드 ✗)
-2. **폴더 받기**: `gh repo clone fritzprix/aibiz ~/aibiz` (Windows: `%USERPROFILE%ibiz`)
+2. **폴더 받기**: `gh repo clone fritzprix/aibiz ~/aibiz` (Windows: `%USERPROFILE%\aibiz`)
 3. **`start_assistant` 더블클릭** → Claude 로그인 → 폴더 신뢰 → 텔레그램 플러그인 설치 안내가 나오면 설치
    - 플러그인 설치 후 창을 닫았다가 `start_assistant` 로 다시 열기
 4. 창에 **`처음 시작하기`** 입력 → 비서가 순서대로 안내:
