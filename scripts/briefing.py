@@ -178,7 +178,7 @@ def cmd_auto(a):
                                                              encoding="utf-8")
     log(f"Claude 종료 (코드 {r.returncode}, {int(time.time() - t0)}초)")
     if not short.exists() or not full.exists():
-        return fail("브리핑 파일이 만들어지지 않았어요. (logs/briefing_claude_last.log 참고)")
+        return fail(claude_failure_reason((r.stdout or "") + (r.stderr or "")))
     try:
         n = send(short.read_text(encoding="utf-8"), full)
     except Exception as e:
@@ -188,6 +188,21 @@ def cmd_auto(a):
     write_status(True, f"{n}명에게 전송", file=full.relative_to(ROOT).as_posix())
     log(f"✅ 완료: {n}명에게 전송")
     return 0
+
+
+def claude_failure_reason(out):
+    """화면 없이 돈 Claude 가 실패한 이유를 쉬운 말로."""
+    import re
+    low = out.lower()
+    if "limit" in low and ("reset" in low or "usage" in low):
+        m = re.search(r"resets?\s+([0-9:]+\s*[ap]m)", out, re.I)
+        when = f" ({m.group(1)} 이후 다시 가능)" if m else ""
+        return f"Claude 사용 한도에 걸렸어요{when}. 한도가 풀린 뒤 비서 창에서 '브리핑 다시 해줘' 라고 하면 돼요."
+    if "login" in low or "not logged in" in low or "authenticat" in low or "/login" in low:
+        return "Claude 로그인이 만료됐어요. start_assistant 로 비서 창을 한 번 열어 로그인해 주세요."
+    if "network" in low or "econn" in low or "timed out" in low:
+        return "인터넷 연결 문제로 브리핑을 만들지 못했어요. 잠시 뒤 '브리핑 다시 해줘' 라고 해 주세요."
+    return "브리핑 파일이 만들어지지 않았어요. (logs/briefing_claude_last.log 참고)"
 
 
 def fail(msg, alert=True):
