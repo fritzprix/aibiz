@@ -28,7 +28,8 @@ Text in `>` blocks is Korean copy to give the user as-is.
 
 ### Open the setup window
 - Windows (PowerShell): `Start-Process -FilePath "<project root>\setup.bat" -ArgumentList "gemini"`
-- Mac: `osascript -e 'tell application "Terminal" to do script "cd \"<project root>\" && ./setup.command gemini"'`
+- Mac: `osascript -e 'tell application "Terminal" to do script "cd \"<project root>\" && bash setup.command gemini"'`
+- If it doesn't open (security policy): give the user the "회의록용 Google AI 키" line from README section 6 ② to paste themselves.
 
 > 설정 창이 열렸어요. 복사한 키를 붙여넣고 Enter. 결제 설정을 했는지 물으면 답해 주세요. 끝나면 "다 했어" 라고 말해 주세요.
 

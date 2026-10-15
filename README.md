@@ -122,6 +122,7 @@ claude --channels plugin:telegram@claude-plugins-official --permission-mode acce
 | 아침 브리핑이 안 왔어요 | 컴퓨터가 꺼져/잠자기였는지 확인 → 비서 창에 "브리핑 다시 해줘" |
 | 텔레그램에 '새 기기 로그인' 알림이 왔어요 | 기기 이름이 **AIDev 메시지 수집기** 면 이 비서예요. 다른 이름이면 텔레그램 설정 > 기기에서 즉시 종료 |
 | 설정 창이 바로 꺼져요 | 폴더에서 `setup` 을 더블클릭해 보고, 창에 나온 문구를 비서에게 알려 주세요 |
+| `start_assistant` / `setup` 이 안 열려요 (회사 보안 정책) | 아래 **6. 실행 파일이 막혀 있을 때** 의 명령을 복사해서 붙여넣으세요 |
 | "로그인이 풀렸어요" | 비서에게 "텔레그램 다시 연결해줘" |
 | Claude 로그인 만료 | `start_assistant` 를 열어 다시 로그인 (아침 브리핑도 이 로그인을 써요) |
 
@@ -141,6 +142,110 @@ claude --channels plugin:telegram@claude-plugins-official --permission-mode acce
 
 ### 새 버전 받기
 비서 창에 "업데이트해줘" 또는 폴더에서 `git pull`. (개인 데이터는 영향 없음)
+
+---
+
+## 6. 실행 파일이 막혀 있을 때 (복사해서 붙여넣기)
+
+회사 보안 정책 때문에 `start_assistant` / `setup` 파일을 더블클릭해도 열리지 않으면, 아래 명령을 **통째로 복사해서** 터미널에 붙여넣고 Enter 를 누르세요.
+파일을 실행하는 대신 같은 일을 하는 명령을 직접 입력하는 방법이에요.
+- Windows: 시작 메뉴 → **PowerShell**
+- Mac: 응용 프로그램 → 유틸리티 → **터미널**
+
+폴더 위치가 다르면 첫 줄의 `aibiz` 경로만 실제 위치로 바꾸세요.
+
+### ① 처음 한 번: 필요한 프로그램 준비
+
+**Windows (PowerShell)**
+```powershell
+cd $HOME\aibiz
+if (-not (Get-Command python -ErrorAction SilentlyContinue)) { winget install -e --id Python.Python.3.12 --scope user; Write-Host "파이썬 설치 완료. PowerShell 을 닫고 새로 연 다음 이 블록을 한 번 더 붙여넣으세요."; return }
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+**Mac (터미널)**
+```bash
+cd ~/aibiz
+python3 -m venv .venv || { echo "개발자 도구 설치 창이 뜨면 '설치'를 누르고, 끝나면 이 블록을 다시 붙여넣으세요."; xcode-select --install; }
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+### ② 설정 창 대신 (비서가 "설정 창을 열었어요"라고 했는데 안 열렸을 때)
+
+비서가 말한 설정 종류에 맞는 **한 줄**만 붙여넣으세요. 안내는 터미널에 나와요.
+
+| 설정 | Windows (PowerShell) | Mac (터미널) |
+|---|---|---|
+| 내 텔레그램 연결 | `cd $HOME\aibiz; .venv\Scripts\python.exe scripts\tg_sync.py setup` | `cd ~/aibiz && .venv/bin/python scripts/tg_sync.py setup` |
+| 휴대폰 질문용 봇 | `cd $HOME\aibiz; .venv\Scripts\python.exe scripts\tg_sync.py bot-setup` | `cd ~/aibiz && .venv/bin/python scripts/tg_sync.py bot-setup` |
+| 회의록용 Google AI 키 | `cd $HOME\aibiz; .venv\Scripts\python.exe scripts\transcribe.py setup` | `cd ~/aibiz && .venv/bin/python scripts/transcribe.py setup` |
+
+### ③ 비서 시작 (`start_assistant` 대신)
+
+**Windows (PowerShell)**
+```powershell
+cd $HOME\aibiz
+$PY = ".venv/Scripts/python.exe"
+$tools = @(
+  "Bash($PY scripts/tg_sync.py:*)", "Bash($PY scripts/transcribe.py:*)", "Bash($PY scripts/digest.py:*)",
+  "Bash($PY scripts/briefing.py:*)", "Bash($PY scripts/md2docx.py:*)",
+  "mcp__plugin_telegram_telegram__reply", "mcp__plugin_telegram_telegram__react",
+  "mcp__plugin_telegram_telegram__edit_message", "mcp__plugin_telegram_telegram__download_attachment",
+  "Agent", "Skill"
+)
+claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools @tools
+```
+
+**Mac (터미널)**
+```bash
+cd ~/aibiz
+PY=.venv/bin/python
+TOOLS=(
+  "Bash($PY scripts/tg_sync.py:*)" "Bash($PY scripts/transcribe.py:*)" "Bash($PY scripts/digest.py:*)"
+  "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)"
+  "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react"
+  "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment"
+  "Agent" "Skill"
+)
+claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools "${TOOLS[@]}"
+```
+
+### ④ 매일 편하게 (선택)
+③ 을 매번 붙여넣기 번거로우면, 아래를 **한 번만** 실행해 두세요. 이후로는 터미널에 `aibiz` 만 입력하면 비서가 켜져요.
+
+**Windows (PowerShell)**
+```powershell
+New-Item -ItemType File -Force -Path $PROFILE | Out-Null
+Add-Content $PROFILE @'
+function aibiz {
+  Set-Location $HOME\aibiz
+  $PY = ".venv/Scripts/python.exe"
+  $tools = @("Bash($PY scripts/tg_sync.py:*)","Bash($PY scripts/transcribe.py:*)","Bash($PY scripts/digest.py:*)","Bash($PY scripts/briefing.py:*)","Bash($PY scripts/md2docx.py:*)","mcp__plugin_telegram_telegram__reply","mcp__plugin_telegram_telegram__react","mcp__plugin_telegram_telegram__edit_message","mcp__plugin_telegram_telegram__download_attachment","Agent","Skill")
+  claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools @tools
+}
+'@
+```
+(PowerShell 이 "스크립트 실행이 비활성화"라고 하면 이 방법은 건너뛰고 ③ 을 그대로 쓰세요.)
+
+**Mac (터미널)**
+```bash
+cat >> ~/.zshrc <<'EOF'
+aibiz() {
+  cd ~/aibiz || return
+  local PY=.venv/bin/python
+  claude --channels plugin:telegram@claude-plugins-official --permission-mode acceptEdits --allowedTools \
+    "Bash($PY scripts/tg_sync.py:*)" "Bash($PY scripts/transcribe.py:*)" "Bash($PY scripts/digest.py:*)" \
+    "Bash($PY scripts/briefing.py:*)" "Bash($PY scripts/md2docx.py:*)" \
+    "mcp__plugin_telegram_telegram__reply" "mcp__plugin_telegram_telegram__react" \
+    "mcp__plugin_telegram_telegram__edit_message" "mcp__plugin_telegram_telegram__download_attachment" \
+    "Agent" "Skill"
+}
+EOF
+source ~/.zshrc
+```
+
+> 아침 브리핑과 자동 수집은 이 실행 파일들과 상관없이 동작해요 (파이썬 프로그램을 직접 예약 실행).
 
 ---
 

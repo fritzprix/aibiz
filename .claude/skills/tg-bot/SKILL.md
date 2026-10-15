@@ -48,7 +48,8 @@ If `/telegram:configure`-style commands are unavailable, tell the user:
 ### 3. Enter the token (setup window)
 Claude opens the window:
 - Windows (PowerShell): `Start-Process -FilePath "<project root>\setup.bat" -ArgumentList "bot"`
-- Mac: `osascript -e 'tell application "Terminal" to do script "cd \"<project root>\" && ./setup.command bot"'`
+- Mac: `osascript -e 'tell application "Terminal" to do script "cd \"<project root>\" && bash setup.command bot"'`
+- If it doesn't open (security policy): give the user the "휴대폰 질문용 봇" line from README section 6 ② to paste themselves.
 
 > 설정 창이 열렸어요. BotFather 가 준 토큰을 붙여넣고 Enter 를 누르세요. (휴대폰의 토큰은 텔레그램 데스크톱/웹에서 복사하거나, 휴대폰에서 복사해 컴퓨터로 옮겨야 해요. 가장 쉬운 방법: 컴퓨터에서 https://web.telegram.org 로 로그인해 BotFather 대화를 열기)
 
@@ -57,6 +58,8 @@ The window catches malformed tokens (missing colon, partial copy, leading 'bot')
 ### 4. Reopen the assistant
 The token is read only at startup:
 > 지금 이 Claude 창을 닫고, 폴더의 **start_assistant** 를 더블클릭해서 다시 열어 주세요. 그 다음 휴대폰에서 봇에게 아무 메시지나 보내 보세요.
+
+If `start_assistant` is blocked by security policy, point the user to README section 6 ③ (copy-paste start command) or ④ (one-time `aibiz` shortcut).
 
 (Claude can't restart itself. `start_assistant` runs `claude --channels plugin:telegram@claude-plugins-official` — plain `claude` won't receive bot messages. It also pre-allows the assistant's `scripts/` and Telegram reply tools so phone questions never stall on a PC approval prompt.)
 

@@ -81,13 +81,15 @@ Common problems at this step (answer in Korean when the user reports one):
 ### 3. Open the setup window (login) — `[E-NO-CREDS]`, `[E-NO-LOGIN]`, `[E-LOGGED-OUT]`, `[E-BAD-API]`
 Claude opens the window:
 - Windows (PowerShell): `Start-Process -FilePath "<project root>\setup.bat"`
-- Mac: `open "<project root>/setup.command"`
+- Mac: `osascript -e 'tell application "Terminal" to do script "cd \"<project root>\" && bash setup.command"'` (run via `bash` so a missing exec bit or quarantine flag doesn't block it)
+
+If the window doesn't open (company security policy blocking `.bat`/`.command`, or the user says nothing appeared): the setup is interactive, so Claude can't run it in its own shell. Give the user the one-line command from README section "6. 실행 파일이 막혀 있을 때" (② table, matching OS and setup type) to paste into PowerShell/Terminal themselves; if `.venv` doesn't exist yet, give block ① first.
 
 Tell the user:
 > 방금 검은 설정 창이 열렸어요. 창의 안내대로 ① api_id ② api_hash ③ 휴대폰 번호 ④ 텔레그램 앱으로 온 숫자 코드 ⑤ (설정해 두셨다면) 2단계 비밀번호 순서로 입력하세요. 끝나면 "다 했어"라고 말해 주세요.
 > 창이 안 보이면 작업 표시줄(Mac: Dock)을 확인하거나, 폴더에서 `setup` 을 더블클릭하세요.
 
-Mac "unidentified developer" warning: Finder → **right-click → Open → Open**. "Permission denied": Claude runs `chmod +x setup.command start_assistant.command`.
+Mac "unidentified developer" warning when double-clicking: Finder → **right-click → Open → Open**. "Permission denied": Claude runs `chmod +x setup.command start_assistant.command`. If still blocked by policy → README section 6.
 
 The window catches most mistakes itself (swapped api_id/api_hash, spaces, length, 010 phone format, wrong/expired code resend, 2FA hint).
 When the user says "다 했어" → verify with `doctor`.
